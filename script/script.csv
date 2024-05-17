@@ -1,0 +1,30 @@
+scene;object;state;state_name;action;Item;result_action;result_text_de
+1;box;1;closed;inspect;;;Die Kiste ist verschlossen.
+1;box;1;closed;take;;;„Die ist viel zu schwer!“
+1;box;1;closed;use;;;„Dazu fällt mir nichts ein…“
+1;box;1;closed;talk;;;„Hallo Herr Kiste!“
+1;box;1;closed;chew;;;„Mmmh… Feuchtes Holz.“
+1;box;1;closed;sniff;;;„*schnüffel* Riecht etwas schimmelig.“
+1;box;1;closed;item;ball_of_wool;attach_wool;Katzi hat eine Schnur an der Kistenwand befestigt.
+1;box;1;closed;item;key;;„Ich sehe kein Schlüsselloch…“
+1;box;2;with_string;inspect;;;An der Kiste ist eine Wollschnur befestigt.
+1;box;2;with_string;take;;;„Die ist viel zu schwer!“
+1;box;2;with_string;use;;open_box;Katzi zieht an der Schnur.
+1;box;2;with_string;talk;;;„Hallo Herr Kiste!“
+1;box;2;with_string;chew;;;„Mmmh… Feuchtes Holz.“
+1;box;2;with_string;sniff;;;„*schnüffel* Riecht etwas schimmelig.“
+1;box;2;with_string;item;key;;„Ich sehe kein Schlüsselloch…“
+1;box;3;opened;inspect;;;Die Kiste ist geöffnet!
+1;box;3;opened;take;;;„Die ist viel zu schwer!“
+1;box;3;opened;use;;;„Dazu fällt mir nichts ein…“
+1;box;3;opened;talk;;;„Hallo Herr Kiste!“
+1;box;3;opened;chew;;;„Mmmh… Feuchtes Holz.“
+1;box;3;opened;sniff;;;„*schnüffel* Das muss Käse sein!“
+1;box;3;opened;item;key;;„Ich sehe kein Schlüsselloch…“
+1;mouse;1;sleeping;inspect;;;„Pssst, das Mäuschen schläft!“
+1;mouse;1;sleeping;take;;;„Ich möchte es nicht stören.“
+1;mouse;1;sleeping;use;;;„Was soll ich damit?
+1;mouse;1;sleeping;talk;;;„Es schläft doch so friedlich…“
+1;mouse;1;sleeping;chew;;;„Das wäre ziemlich unhöflich!“
+1;mouse;1;sleeping;sniff;;;„*schnüffel* Es riecht nach Heu.“
+1;mouse;1;sleeping;item;key;;„Wir wissen noch nicht, ob sie verschlossen ist.“
