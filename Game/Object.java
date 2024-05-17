@@ -1,5 +1,7 @@
 package Game;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class Object extends JButton {
@@ -7,17 +9,15 @@ public class Object extends JButton {
 	private String title; // Readable object name ingame
 	private String name; // Identifier that will be used for logic
 	private int state; // modifier for current object state
-	private int x, y, width, height;
-	
+
 	public Object(String title, String name, int state, int x, int y, int width, int height) {
 		this.title = title;
 		this.name = name;
 		this.state = state;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.setBounds(x, y, width, height);
+		this.setBounds(x, y, width, height);	// needs to be set to image dimensions
+		setIcon();
+		this.setBorder(BorderFactory.createEmptyBorder());
+		this.setContentAreaFilled(false);
 	}
 	
 	public String getTitle() {
@@ -30,5 +30,21 @@ public class Object extends JButton {
 	
 	public int getState() {
 		return state;
+	}
+	
+	public void setState(int state) {
+		this.state = state;
+		this.setIcon();
+	}
+	
+	public Object getObjectByName(String objectName) {
+		return this;
+	}
+	
+	private void setIcon() {
+		this.setIcon(new ImageIcon(this.getClass().getResource("/images/" + name + state + ".png")));
+		// The disabled state of the Object (JButton) button does not impact functionality,
+		// so I can swap to a highlighted image by using setEnabled(false)
+		this.setDisabledIcon(new ImageIcon(this.getClass().getResource("/images/" + name + state + "highlight" + ".png")));
 	}
 }

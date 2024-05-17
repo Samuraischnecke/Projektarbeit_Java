@@ -27,31 +27,40 @@ public class ActionButton extends JToggleButton {
 	private void processAction(String action) {
 		switch (action) {
 		default:
-			System.out.println("Was soll ich tun?");
+			Main.write("Was soll ich tun?");
 			break;
 		case "inspect":
-			System.out.println("Was soll ich mir naeher anschauen?");
+			Main.write("Was soll ich mir näher anschauen?");
 			break;
 		case "take":
-			System.out.println("Was soll ich aufheben?");
+			Main.write("Was soll ich aufheben?");
 			break;
 		case "use":
-			System.out.println("Was soll ich benutzen?");
+			Main.write("Was soll ich benutzen?");
 			break;
 		case "talk":
-			System.out.println("Mit wem soll ich sprechen?");
+			Main.write("Mit wem soll ich sprechen?");
 			break;
 		case "chew":
-			System.out.println("Woran soll ich knabbern?");
+			Main.write("Woran soll ich knabbern?");
 			break;
 		case "sniff":
-			System.out.println("Woran soll ich schnueffeln?");
+			Main.write("Woran soll ich schnüffeln?");
+			break;
+		case "item":
+			Main.write("ITEM BENUTZEN WIP");
+			if (Main.getGameContent().getScene() == 1) {
+				Main.getGameContent().setScene(2);
+			} else {
+				Scene.currentBoxState = 2;
+				Main.getGameContent().setScene(1);
+			}
 			break;
 		case "highlight":
 			// Highlight Action will be handled seperately in Main Action Listener
 			break;
 		}
-		Interaction.setAction(action);
+		InteractionHandler.setAction(action);
 	}
 
 	public class GameActionListener implements ActionListener {

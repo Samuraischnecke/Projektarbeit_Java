@@ -1,30 +1,30 @@
 scene;object;state;state_name;action;Item;result_action;result_text_de
 1;box;1;closed;inspect;;;Die Kiste ist verschlossen.
-1;box;1;closed;take;;;„Die ist viel zu schwer!“
-1;box;1;closed;use;;;„Dazu fällt mir nichts ein…“
-1;box;1;closed;talk;;;„Hallo Herr Kiste!“
-1;box;1;closed;chew;;;„Mmmh… Feuchtes Holz.“
-1;box;1;closed;sniff;;;„*schnüffel* Riecht etwas schimmelig.“
+1;box;1;closed;take;;;â€žDie ist viel zu schwer!â€œ
+1;box;1;closed;use;;attach_wool;Katzi hat eine Schnur an der Kistenwand befestigt.
+1;box;1;closed;talk;;;â€žHallo Herr Kiste!â€œ
+1;box;1;closed;chew;;;â€žMmmhâ€¦ Feuchtes Holz.â€œ
+1;box;1;closed;sniff;;;â€ž*schnÃ¼ffel* Riecht etwas schimmelig.â€œ
 1;box;1;closed;item;ball_of_wool;attach_wool;Katzi hat eine Schnur an der Kistenwand befestigt.
-1;box;1;closed;item;key;;„Ich sehe kein Schlüsselloch…“
+1;box;1;closed;item;key;;â€žIch sehe kein SchlÃ¼ssellochâ€¦â€œ
 1;box;2;with_string;inspect;;;An der Kiste ist eine Wollschnur befestigt.
-1;box;2;with_string;take;;;„Die ist viel zu schwer!“
+1;box;2;with_string;take;;;â€žDie ist viel zu schwer!â€œ
 1;box;2;with_string;use;;open_box;Katzi zieht an der Schnur.
-1;box;2;with_string;talk;;;„Hallo Herr Kiste!“
-1;box;2;with_string;chew;;;„Mmmh… Feuchtes Holz.“
-1;box;2;with_string;sniff;;;„*schnüffel* Riecht etwas schimmelig.“
-1;box;2;with_string;item;key;;„Ich sehe kein Schlüsselloch…“
-1;box;3;opened;inspect;;;Die Kiste ist geöffnet!
-1;box;3;opened;take;;;„Die ist viel zu schwer!“
-1;box;3;opened;use;;;„Dazu fällt mir nichts ein…“
-1;box;3;opened;talk;;;„Hallo Herr Kiste!“
-1;box;3;opened;chew;;;„Mmmh… Feuchtes Holz.“
-1;box;3;opened;sniff;;;„*schnüffel* Das muss Käse sein!“
-1;box;3;opened;item;key;;„Ich sehe kein Schlüsselloch…“
-1;mouse;1;sleeping;inspect;;;„Pssst, das Mäuschen schläft!“
-1;mouse;1;sleeping;take;;;„Ich möchte es nicht stören.“
-1;mouse;1;sleeping;use;;;„Was soll ich damit?
-1;mouse;1;sleeping;talk;;;„Es schläft doch so friedlich…“
-1;mouse;1;sleeping;chew;;;„Das wäre ziemlich unhöflich!“
-1;mouse;1;sleeping;sniff;;;„*schnüffel* Es riecht nach Heu.“
-1;mouse;1;sleeping;item;key;;„Wir wissen noch nicht, ob sie verschlossen ist.“
+1;box;2;with_string;talk;;;â€žHallo Herr Kiste!â€œ
+1;box;2;with_string;chew;;;â€žMmmhâ€¦ Feuchtes Holz.â€œ
+1;box;2;with_string;sniff;;;â€ž*schnÃ¼ffel* Riecht etwas schimmelig.â€œ
+1;box;2;with_string;item;key;;â€žIch sehe kein SchlÃ¼ssellochâ€¦â€œ
+1;box;3;opened;inspect;;;Die Kiste ist geÃ¶ffnet!
+1;box;3;opened;take;;;â€žDie ist viel zu schwer!â€œ
+1;box;3;opened;use;;;â€žDazu fÃ¤llt mir nichts einâ€¦â€œ
+1;box;3;opened;talk;;;â€žHallo Herr Kiste!â€œ
+1;box;3;opened;chew;;;â€žMmmhâ€¦ Feuchtes Holz.â€œ
+1;box;3;opened;sniff;;;â€ž*schnÃ¼ffel* Das muss KÃ¤se sein!â€œ
+1;box;3;opened;item;key;;â€žIch sehe kein SchlÃ¼ssellochâ€¦â€œ
+1;mouse;1;sleeping;inspect;;;â€žPssst, das MÃ¤uschen schlÃ¤ft!â€œ
+1;mouse;1;sleeping;take;;;â€žIch mÃ¶chte es nicht stÃ¶ren.â€œ
+1;mouse;1;sleeping;use;;;â€žWas soll ich damit?
+1;mouse;1;sleeping;talk;;;â€žEs schlÃ¤ft doch so friedlichâ€¦â€œ
+1;mouse;1;sleeping;chew;;;â€žDas wÃ¤re ziemlich unhÃ¶flich!â€œ
+1;mouse;1;sleeping;sniff;;;â€ž*schnÃ¼ffel* Es riecht nach Heu.â€œ
+1;mouse;1;sleeping;item;key;;â€žWir wissen noch nicht, ob sie verschlossen ist.â€œ

@@ -8,28 +8,31 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.PrintStream;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
 import util.ColoredPanel;
-import util.TextAreaOutputStream;
+import util.FileReader;
 
-public class Main extends JFrame implements ActionListener, MouseListener {
+public class Main extends JFrame implements ActionListener {
 
 	private JLayeredPane gameSpace;
-	private JPanel background, gameContent, gameMenu, systemMenu;
+	private JPanel background;
+	private static Scene gameContent;
+	private JPanel gameMenu;
+	private JPanel systemMenu;
 	
 	private JScrollPane gameTextBox;
-	private JTextArea gameText;
+	private static JTextArea gameText;
 	
-	private ButtonGroup gameActionButtonGroup;
+	private boolean isHighlighted = false;
+	private static FileReader fr;
+	
+	static ButtonGroup gameActionButtonGroup;
 	private ArrayList<ActionButton> gameButtons;
-	private ActionButton buttonInspect, buttonTake, buttonUse, buttonTalk, buttonChew, buttonSniff, buttonItem, buttonHighlight;
-	private SystemButton buttonSystem, buttonContinue, buttonNew, buttonSave, buttonLoad, buttonClose;
+	private ActionButton buttonInspect, buttonTake, buttonUse, buttonTalk, buttonChew, buttonSniff, buttonItem;
+	private SystemButton buttonHighlight, buttonSystem, buttonContinue, buttonNew, buttonSave, buttonLoad, buttonClose;
 	
 	private static final int WIDTH = 1280;
 	private static final int HEIGHT = 800;
@@ -60,9 +63,9 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(("/images/cat.png"))));
 		
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-		// Create all game components (Game Panel, Menu Panels & Buttons)
+		
 		createGameSpace();
+		fr = new FileReader();
 	}
 
 	public void changeFont(Component component, Font font) {
@@ -84,34 +87,12 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 		gameSpace.add(background, JLayeredPane.DEFAULT_LAYER);
 
 		this.add(gameSpace);
+
+		gameContent = new Scene();
+
+		gameSpace.add(getGameContent(), JLayeredPane.PALETTE_LAYER);
 		
 		createSystemMenu();
-	}
-
-	private void createGameContent() {
-		gameContent = ColoredPanel.create(Color.GREEN, 10, 10, 1260, 650);
-
-		gameSpace.add(gameContent, JLayeredPane.PALETTE_LAYER);
-		
-		gameText = new JTextArea();
-		gameText.setBackground(Color.BLACK);
-		gameText.setForeground(Color.WHITE);
-		gameText.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-		gameText.setFont(gameFont);
-		gameText.setEnabled(false);
-		gameText.setLineWrap(true);
-		gameText.setWrapStyleWord(true);
-		
-		// Redirect System.out.println() statements to the ingame textBox
-		TextAreaOutputStream outputStream = new TextAreaOutputStream(gameText);
-		System.setOut(new PrintStream(outputStream));
-		
-		gameTextBox = new JScrollPane(gameText);
-		gameTextBox.setBounds(15, 15, 450, 105);		
-		gameTextBox.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		gameTextBox.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		gameSpace.add(gameTextBox, JLayeredPane.MODAL_LAYER);
 	}
 
 	private void createGameMenu() {
@@ -147,7 +128,7 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 			gameMenu.add(button);
 		}
 		
-		buttonHighlight = new ActionButton("Katzenaugen", "highlight", 1000, 65, 250, 45);
+		buttonHighlight = new SystemButton("Katzenaugen", "highlight", 1000, 65, 250, 45);
 		buttonSystem = new SystemButton("Hauptmenü", "system", 1000, 10, 250, 45);
 		
 		buttonHighlight.addActionListener(this);
@@ -168,7 +149,6 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 		
 		buttonContinue.setEnabled(false);
 		buttonSave.setEnabled(false);
-		buttonLoad.setEnabled(false);	// ToDo: Remove at database implementation
 		
 		for (SystemButton button : SystemButton.getButtons()) {
 			button.addActionListener(this);
@@ -180,35 +160,53 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 	
 	private void startNewGame() {
 		createGameMenu();
-		createGameContent();
+		createGameTextLog();
+		getGameContent().setScene(1);
 		
 		buttonContinue.setEnabled(true);
 		// buttonSave.setEnabled(true);		// ToDo: Uncomment on database implementation
 		buttonNew.setEnabled(false);		// ToDo: Remove after fixing issues with calling startNewGame from running game
 		
-		// ToDo: Build scene 1!
-		Scene.setScene(1);
-		// ToDo: Move that shit where it belongs (into Scene handler for example)
-		Object someObject = new Object("Box", "box", 1, 250, 250, 250, 250);
-		someObject.addMouseListener(this);
-		gameContent.add(someObject);		
+//		resetCurrentObjects();
 		
 		systemMenu.setVisible(false);
-		System.out.println("Neues Spiel gestartet!");
+		write("Neues Spiel gestartet!");
 	}
 	
-	private void startFromLoad() {
+	private void startFromLoad(int scene) {
 		createGameMenu();
-		createGameContent();
-		
-		// ToDo: Check system button states and change them accordingly after loading game
+		createGameTextLog();
+		getGameContent().setScene(scene);
 
-		// ToDo: Build scene X! Something like this maybe:
-//		Scene.buildScene(database.loadedScene);
-//		Object.setObjectStates(database.getObjectStates);
+		buttonContinue.setEnabled(true);
+		// buttonSave.setEnabled(true);		// ToDo: Uncomment on database implementation
+		buttonNew.setEnabled(false);		// ToDo: Remove after fixing issues with calling startNewGame from running game
 		
 		systemMenu.setVisible(false);
-		System.out.println("Spiel geladen!");
+		write("Spiel geladen!");
+	}
+	
+	private void createGameTextLog() {
+		gameText = new JTextArea();
+		gameText.setBackground(Color.BLACK);
+		gameText.setForeground(Color.WHITE);
+		gameText.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		gameText.setFont(gameFont);
+		gameText.setEnabled(false);
+		gameText.setLineWrap(true);
+		gameText.setWrapStyleWord(true);
+		
+		gameTextBox = new JScrollPane(gameText);
+		gameTextBox.setBounds(15, 15, 450, 105);		
+		gameTextBox.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		gameTextBox.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		gameSpace.add(gameTextBox, JLayeredPane.MODAL_LAYER);
+	}
+	
+	public static void write(String text) {
+		gameText.append(text + "\n");
+		gameText.setCaretPosition(gameText.getDocument().getLength() - 1);
 	}
 
 	@Override
@@ -217,21 +215,23 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 			systemMenu.setVisible(false);
 		}
 		if (e.getSource() == buttonSave) {
-			startNewGame();		// build new game
 			systemMenu.setVisible(false);
 			// ToDo: database implementation
 		}
 		if (e.getSource() == buttonLoad) {
-			startFromLoad();	// open database table selection
 			systemMenu.setVisible(false);
 			// ToDo: database implementation
+			// ToDo: load game from database info, something like:
+//			startFromLoad(database.getSaveFile.getScene());	// open database table selection
+			startFromLoad(1);		// Todo: Remove after database implementation
 		}
 		if (e.getSource() == buttonNew) {
-			if (Scene.getScene() == 0) {
+			if (getGameContent().getScene() == 0) {
 				startNewGame();
 			} else {
 				// ToDo: warning dialog before starting new game
-				// Are you sure you want to start a new game?				
+				// Are you sure you want to start a new game?
+				startNewGame();
 			}
 		}
 		if (e.getSource() == buttonClose) {
@@ -242,13 +242,12 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 		if (e.getSource() == buttonSystem) {
 			systemMenu.setVisible(!systemMenu.isVisible());
 			gameActionButtonGroup.clearSelection();
-			Interaction.setAction("");
+			InteractionHandler.setAction("");
 		}
 		if (e.getSource() == buttonHighlight) {
 			systemMenu.setVisible(false);
-			// ToDo: trigger current game objects highlight
-			// MAYBE this should also be a ToggleButton? Something like this:
-			// Scene.highlightCurrentObjects();
+			isHighlighted = !isHighlighted;
+			getGameContent().highlightCurrentObjects(isHighlighted);
 		}
 		
 		if (e.getSource() instanceof ActionButton) {
@@ -258,31 +257,7 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 		}
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		gameActionButtonGroup.clearSelection();
-		Interaction.startInteraction(((Object) e.getSource()));
+	public static Scene getGameContent() {
+		return gameContent;
 	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-	}
-
 }
