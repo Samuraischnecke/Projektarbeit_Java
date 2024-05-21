@@ -2,15 +2,17 @@ package Game;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.text.html.ImageView;
 
 public class Scene extends JPanel implements MouseListener {
 	private int scene = 0;
-	private ArrayList<Object> currentSceneObjects = new ArrayList<>();
-	private ArrayList<Object> previousSceneObjects = new ArrayList<>();
-	private Object box, mouse, tree, wool, door, cheese;
+	private ArrayList<ImageObject> currentSceneObjects = new ArrayList<>();
+	private ArrayList<ImageObject> previousSceneObjects = new ArrayList<>();
+	private ImageObject box, mouse, tree, wool, door, cheese;
 
 	public static int currentBoxState = 1;
 	public static int currentMouseState = 1;
@@ -38,11 +40,11 @@ public class Scene extends JPanel implements MouseListener {
 		} else if (scene == 2) {
 //			currentSceneObjects.add(tree);
 		}
-		for (Object object : getPreviousSceneObjects()) {
+		for (ImageObject object : getPreviousSceneObjects()) {
 			this.remove(object);
 		}
-		for (Object object : getCurrentSceneObjects()) {
-			object.addMouseListener(this);
+		for (ImageObject object : getCurrentSceneObjects()) {
+			object.getButton().addMouseListener(this);
 			this.add(object);
 		}
 		this.revalidate();
@@ -50,27 +52,29 @@ public class Scene extends JPanel implements MouseListener {
 	}
 
 	private void createAllObjects() {
-		box = new Object("Box", "box", currentBoxState, 100, 200, 90, 90);
-		mouse = new Object("Maus", "mouse", currentMouseState, 200, 200, 90, 90);
-		tree = new Object("Baum", "tree", currentTreeState, 300, 200, 90, 90);
-		wool = new Object("Wollknäul", "wool", currentWoolState, 400, 200, 90, 90);
-		door = new Object("Tür", "door", currentDoorState, 500, 200, 90, 90);
-		cheese = new Object("Käse", "cheese", currentCheeseState, 600, 200, 90, 90);
+		box = new ImageObject("Box", "box", currentBoxState, 700, 120, 525, 513);
+		mouse = new ImageObject("Maus", "mouse", currentMouseState, 200, 200, 90, 90);
+		tree = new ImageObject("Baum", "tree", currentTreeState, 200, 300, 90, 90);
+		wool = new ImageObject("Wollknäul", "wool", currentWoolState, 200, 400, 90, 90);
+		door = new ImageObject("Tür", "door", currentDoorState, 300, 200, 90, 90);
+		cheese = new ImageObject("Käse", "cheese", currentCheeseState, 300, 300, 90, 90);
 	}
 
-	public void changeObjectState(Object object, int state) {
+	public void changeObjectState(ImageObject object, int state) {
 		object.setState(state);
 		this.revalidate();
 		this.repaint();
 	}
 
+	// The disabled state of the ImageObject (JButton) button does not impact
+	// functionality, so we can use it to highlight an image
 	public void highlightCurrentObjects(boolean highlightObject) {
 		if (highlightObject) {
-			for (Object object : getCurrentSceneObjects()) {
+			for (ImageObject object : getCurrentSceneObjects()) {
 				object.setEnabled(false);
 			}
 		} else {
-			for (Object object : getCurrentSceneObjects()) {
+			for (ImageObject object : getCurrentSceneObjects()) {
 				object.setEnabled(true);
 			}
 		}
@@ -84,7 +88,7 @@ public class Scene extends JPanel implements MouseListener {
 		scene = newScene;
 
 		previousSceneObjects.clear();
-		for (Object object : getCurrentSceneObjects()) {
+		for (ImageObject object : getCurrentSceneObjects()) {
 			previousSceneObjects.add(object);
 		}
 
@@ -92,23 +96,35 @@ public class Scene extends JPanel implements MouseListener {
 		calculateScene();
 	}
 
-	public ArrayList<Object> getPreviousSceneObjects() {
+	public ArrayList<ImageObject> getPreviousSceneObjects() {
 		return previousSceneObjects;
 	}
 
-	public ArrayList<Object> getCurrentSceneObjects() {
+	public ArrayList<ImageObject> getCurrentSceneObjects() {
 		return currentSceneObjects;
 	}
 
-	public Object getMouse() {
+	public ImageObject getBox() {
+		return box;
+	}
+	
+	public ImageObject getMouse() {
 		return mouse;
 	}
+	
+	public ImageObject getTree() {
+		return tree;
+	}
 
-	public Object getWool() {
+	public ImageObject getWool() {
 		return wool;
 	}
 
-	public Object getCheese() {
+	public ImageObject getDoor() {
+		return door;
+	}
+
+	public ImageObject getCheese() {
 		return cheese;
 	}
 
@@ -116,7 +132,7 @@ public class Scene extends JPanel implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		Main.gameActionButtonGroup.clearSelection();
-		InteractionHandler.startInteraction(((Object) e.getSource()));
+		InteractionHandler.startInteraction(((ImageButton) e.getSource()));
 	}
 
 	@Override
@@ -131,7 +147,7 @@ public class Scene extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		Main.getGameObjectText().setText(((Object) e.getSource()).getTitle());
+		Main.getGameObjectText().setText(((ImageButton) e.getSource()).getTitle());
 	}
 
 	@Override

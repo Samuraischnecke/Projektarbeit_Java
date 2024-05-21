@@ -1,5 +1,6 @@
 package Game;
 
+import java.awt.Container;
 import java.util.List;
 
 import util.FileReader;
@@ -24,21 +25,21 @@ public class InteractionHandler {
 		actionName = action;
 	}
 
-	public static void startInteraction(Object object) {
+	public static void startInteraction(ImageButton button) {
 		if (actionName.isEmpty()) {
-			Main.write("Was soll ich mit " + object.getTitle() + " machen?", false);
+			Main.write("Was soll ich mit " + button.getTitle() + " machen?", false);
 		} else {
-			processInteraction(object);
+			processInteraction(button);
 		}
 		actionName = ""; // reset action
 	}
 
 	// processInteraction always triggers from a game object trigger, other required
 	// data needs to be collected
-	private static void processInteraction(Object object) {
+	private static void processInteraction(ImageButton button) {
 		String currentScene = String.valueOf(Main.getGameContent().getScene());
-		String currentObjectName = object.getName();
-		String currentObjectState = String.valueOf(object.getState());
+		String currentObjectName = button.getName();
+		String currentObjectState = String.valueOf(button.getState());
 		String currentActionName = actionName;
 		String currentItemName = itemName;
 
@@ -49,9 +50,9 @@ public class InteractionHandler {
 							|| currentActionName != "item")) {
 				// Action results in game progress:
 				if (!line.get(6).isEmpty()) {
-					progressGame(line.get(6), object);
+					progressGame(line.get(6));
 					Main.write(line.get(7), true);
-				// Action has no result but flavour text:
+				// Action has no result but flavor text:
 				} else {
 					Main.write(line.get(7), false);
 				}
@@ -60,13 +61,13 @@ public class InteractionHandler {
 		}
 	}
 
-	private static void progressGame(String result_action, Object object) {
+	private static void progressGame(String result_action) {
 		switch (result_action) {
 		default:
-			Main.write("ERROR: result_action nicht bekannt!", true);
+			Main.write("ERROR: 404 Meow (^w^)", true);
 			break;
 		case "drop_wool":
-			Main.getGameContent().changeObjectState(object, 2);
+			Main.getGameContent().getTree().setState(2);
 			Main.getGameContent().getWool().setState(2);
 			Main.getGameContent().getWool().setBounds(400, 300, 90, 90);
 			// ToDo: Move wool object
@@ -78,11 +79,11 @@ public class InteractionHandler {
 			break;
 		case "attach_wool":
 			itemName = "";
-			Main.getGameContent().changeObjectState(object, 2);
+			Main.getGameContent().getBox().setState(2);
 			Main.getItemButton().setEnabled(false);
 			break;
 		case "open_box":
-			Main.getGameContent().changeObjectState(object, 3);
+			Main.getGameContent().getBox().setState(3);
 			Main.getGameContent().getMouse().setState(2);
 			Main.getGameContent().getMouse().setBounds(600, 300, 90, 90);
 			Main.getGameContent().getCheese().setState(1);
@@ -92,12 +93,12 @@ public class InteractionHandler {
 			Main.write("Hallo Herr Mausi.", false);
 			Main.write("Blablabla, so traurig hier eingesperrt zu sein...", false);
 			Main.write("Oh nein, Mitleid! Hier Schlüssel!.", false);
-			Main.getGameContent().changeObjectState(object, 3);
+			Main.getGameContent().getMouse().setState(3);
 			itemName = "key";
 			Main.getItemButton().setEnabled(true);
 			break;
 		case "open_door":
-			Main.getGameContent().changeObjectState(object, 2);
+			Main.getGameContent().getDoor().setState(2);
 			Main.getItemButton().setEnabled(false);
 			break;
 		case "leave_room":
