@@ -15,9 +15,12 @@ public class Object extends JButton {
 		this.name = name;
 		this.state = state;
 		this.setBounds(x, y, width, height);	// needs to be set to image dimensions
-		setIcon();
+		if (state == 0) {
+			this.setVisible(false);
+		}
+//		setIcon();
 		this.setBorder(BorderFactory.createEmptyBorder());
-		this.setContentAreaFilled(false);
+//		this.setContentAreaFilled(false);
 	}
 	
 	public String getTitle() {
@@ -33,8 +36,15 @@ public class Object extends JButton {
 	}
 	
 	public void setState(int state) {
+		if (this.state != 0 && state == 0) {
+			// Hide previously visible object
+			this.setVisible(false);
+		} else if (this.state == 0 && state != 0) {
+			// Show previously hidden object
+			this.setVisible(true);
+		}
 		this.state = state;
-		this.setIcon();
+//		this.setIcon();
 	}
 	
 	public Object getObjectByName(String objectName) {

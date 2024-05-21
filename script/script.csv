@@ -1,30 +1,105 @@
 scene;object;state;state_name;action;Item;result_action;result_text_de
 1;box;1;closed;inspect;;;Die Kiste ist verschlossen.
 1;box;1;closed;take;;;„Die ist viel zu schwer!“
-1;box;1;closed;use;;attach_wool;Katzi hat eine Schnur an der Kistenwand befestigt.
+1;box;1;closed;use;;;Katzi weiß nicht, wie sie die Kiste öffnen soll, so ganz ohne Daumen…
 1;box;1;closed;talk;;;„Hallo Herr Kiste!“
-1;box;1;closed;chew;;;„Mmmh… Feuchtes Holz.“
-1;box;1;closed;sniff;;;„*schnüffel* Riecht etwas schimmelig.“
-1;box;1;closed;item;ball_of_wool;attach_wool;Katzi hat eine Schnur an der Kistenwand befestigt.
+1;box;1;closed;scratch;;;„Verarbeitetes Holz ist nicht so meins.“
+1;box;1;closed;sniff;;;*schnüffel* Riecht etwas schimmelig.
+1;box;1;closed;item;wool;attach_wool;Katzi hat eine Schnur an der Kistenwand befestigt.
 1;box;1;closed;item;key;;„Ich sehe kein Schlüsselloch…“
 1;box;2;with_string;inspect;;;An der Kiste ist eine Wollschnur befestigt.
 1;box;2;with_string;take;;;„Die ist viel zu schwer!“
 1;box;2;with_string;use;;open_box;Katzi zieht an der Schnur.
 1;box;2;with_string;talk;;;„Hallo Herr Kiste!“
-1;box;2;with_string;chew;;;„Mmmh… Feuchtes Holz.“
-1;box;2;with_string;sniff;;;„*schnüffel* Riecht etwas schimmelig.“
+1;box;2;with_string;scratch;;;„Verarbeitetes Holz ist nicht so meins.“
+1;box;2;with_string;sniff;;;*schnüffel* Riecht etwas schimmelig.
+1;box;2;with_string;item;wool;;ERROR
 1;box;2;with_string;item;key;;„Ich sehe kein Schlüsselloch…“
 1;box;3;opened;inspect;;;Die Kiste ist geöffnet!
 1;box;3;opened;take;;;„Die ist viel zu schwer!“
 1;box;3;opened;use;;;„Dazu fällt mir nichts ein…“
 1;box;3;opened;talk;;;„Hallo Herr Kiste!“
-1;box;3;opened;chew;;;„Mmmh… Feuchtes Holz.“
-1;box;3;opened;sniff;;;„*schnüffel* Das muss Käse sein!“
+1;box;3;opened;scratch;;;„Verarbeitetes Holz ist nicht so meins.“
+1;box;3;opened;sniff;;;*schnüffel* Das muss Käse sein!
+1;box;3;opened;item;wool;;ERROR
 1;box;3;opened;item;key;;„Ich sehe kein Schlüsselloch…“
 1;mouse;1;sleeping;inspect;;;„Pssst, das Mäuschen schläft!“
 1;mouse;1;sleeping;take;;;„Ich möchte es nicht stören.“
-1;mouse;1;sleeping;use;;;„Was soll ich damit?
+1;mouse;1;sleeping;use;;;„Was soll ich damit?“
 1;mouse;1;sleeping;talk;;;„Es schläft doch so friedlich…“
-1;mouse;1;sleeping;chew;;;„Das wäre ziemlich unhöflich!“
-1;mouse;1;sleeping;sniff;;;„*schnüffel* Es riecht nach Heu.“
+1;mouse;1;sleeping;scratch;;;„Nein! Armes Mausi…“
+1;mouse;1;sleeping;sniff;;;*schnüffel* Es riecht nach Heu.
+1;mouse;1;sleeping;item;wool;;„Ich glaube, das Mäuschen will jetzt nicht spielen.“
 1;mouse;1;sleeping;item;key;;„Wir wissen noch nicht, ob sie verschlossen ist.“
+1;mouse;2;awake;inspect;;;„Ein sehr aufgewecktes Mäuschen!“
+1;mouse;2;awake;take;;;„Man nimmt nicht einfach fremde Mäuschen.“
+1;mouse;2;awake;use;;;„Was soll ich damit?“
+1;mouse;2;awake;talk;;start_dialog;DIALOGSEQUENZ
+1;mouse;2;awake;scratch;;;„Nein! Armes Mausi…“
+1;mouse;2;awake;sniff;;;*schnüffel* Es riecht nach Heu und Käse.
+1;mouse;2;awake;item;wool;;ERROR
+1;mouse;2;awake;item;key;;„Das Mäuschen ist nicht sehr verschlossen.“
+1;mouse;3;spoken_to;inspect;;;„Ein sehr aufgewecktes Mäuschen!“
+1;mouse;3;spoken_to;take;;;„Man nimmt nicht einfach fremde Mäuschen.“
+1;mouse;3;spoken_to;use;;;„Was soll ich damit?“
+1;mouse;3;spoken_to;talk;;;Mausi: „Hab draußen viel Spaß!“
+1;mouse;3;spoken_to;scratch;;;„Nein! Armes Mausi…“
+1;mouse;3;spoken_to;sniff;;;*schnüffel* Es riecht nach Heu und Käse.
+1;mouse;3;spoken_to;item;wool;;ERROR
+1;mouse;3;spoken_to;item;key;;„Das Mäuschen ist nicht sehr verschlossen.“
+1;tree;1;unscratched;inspect;;;„Ein kleiner Baum.“
+1;tree;1;unscratched;take;;;„Der ist mir zu unhandlich.“
+1;tree;1;unscratched;use;;;„Was soll ich damit?“
+1;tree;1;unscratched;talk;;;„Wie ist die Luft da oben?“
+1;tree;1;unscratched;scratch;;drop_wool;Katzi wetzt seine Krallen ausgiebig am Stamm des Baums. Ein Wollknäul fällt vom Baum.
+1;tree;1;unscratched;sniff;;;*schnüffel* Mmmmh. Der Geruch der Natur…
+1;tree;1;unscratched;item;wool;;ERROR
+1;tree;1;unscratched;item;key;;„Der Baum wurde noch nicht zu einer Tür verarbeitet.“
+1;tree;2;scratched;inspect;;;„Ein kleiner zerkratzter Baum.“
+1;tree;2;scratched;take;;;„Der ist mir zu unhandlich.“
+1;tree;2;scratched;use;;;„Was soll ich damit?“
+1;tree;2;scratched;talk;;;„Wie ist die Luft da oben?“
+1;tree;2;scratched;scratch;;;Katzi wetzt seine Krallen ausgiebig am Stamm des Baums.
+1;tree;2;scratched;sniff;;;*schnüffel* Mmmmh. Der Geruch der Natur…
+1;tree;2;scratched;item;wool;;„Da ist die Schönheit runtergepurzelt…“
+1;tree;2;scratched;item;key;;„Der Baum wurde noch nicht zu einer Tür verarbeitet.“
+1;wool;1;on_tree;inspect;;;„Ein Wollknäul hängt auf dem Baum!“
+1;wool;1;on_tree;take;;;„Da komm ich nicht ran ohne Chaos zu verursachen…“
+1;wool;1;on_tree;use;;;„Da komm ich nicht ran ohne Chaos zu verursachen…“
+1;wool;1;on_tree;talk;;;„Hallo geknäulte Schönheit!“
+1;wool;1;on_tree;scratch;;;„Da komm ich nicht ran ohne Chaos zu verursachen…“
+1;wool;1;on_tree;sniff;;;„Von hier aus kann ich nichts riechen.“
+1;wool;1;on_tree;item;wool;;ERROR
+1;wool;1;on_tree;item;key;;„Der Schlüssel zum Knäul? Ich glaube nicht.“
+1;wool;2;on_floor;inspect;;;„Ein Wollknäul!“
+1;wool;2;on_floor;take;;take_wool;Katzi nimmt das Wollknäul mit.
+1;wool;2;on_floor;use;;;Katzi schubst den Wollknäul ein wenig umher.
+1;wool;2;on_floor;talk;;;„Hallo geknäulte Schönheit!“
+1;wool;2;on_floor;scratch;;;„Ich möchte es nicht zerstören... NOCH nicht.“
+1;wool;2;on_floor;sniff;;;*schnüffel* Es riecht noch nach Baum.
+1;wool;2;on_floor;item;wool;;ERROR
+1;wool;2;on_floor;item;key;;ERROR
+1;door;1;closed;inspect;;;„Eine kleintiergroße Tür!“
+1;door;1;closed;take;;;„Ich bin nicht stark genug um sie aus den Angeln zu heben.“
+1;door;1;closed;use;;;„Sie ist verschlossen“
+1;door;1;closed;talk;;;„Halloooo? Ist dahinter jemand?“
+1;door;1;closed;scratch;;;„Verarbeitetes Holz ist nicht so meins.“
+1;door;1;closed;sniff;;;*schüffel* Frisch geölt.
+1;door;1;closed;item;wool;;„Das verstehe ich jetzt nicht…“
+1;door;1;closed;item;key;open_door;Katzi steckt den Schlüssel in das Schlüsselloch und öffnet die Tür.
+1;door;2;opened;inspect;;;„Eine kleintiergroße, geöffnete Tür!“
+1;door;2;opened;take;;;„Ich bin nicht stark genug um sie aus den Angeln zu heben.“
+1;door;2;opened;use;;leave_room;Katzi entschwindet durch die Tür.
+1;door;2;opened;talk;;;„Hallo Natur!“
+1;door;2;opened;scratch;;;„Verarbeitetes Holz ist nicht so meins.“
+1;door;2;opened;sniff;;;*schnüffel* Der wunderbare Duft der Außenwelt!
+1;door;2;opened;item;wool;;ERROR
+1;door;2;opened;item;key;;ERROR
+1;cheese;1;spawned;inspect;;;Ein schimmeliger Käse, der von einer Maus bewacht wird.
+1;cheese;1;spawned;take;;;Das Mäuschen stellt sich in den Weg.
+1;cheese;1;spawned;use;;;Das Mäuschen stellt sich in den Weg.
+1;cheese;1;spawned;talk;;;Das Mäuschen schüttelt drohend den Kopf.
+1;cheese;1;spawned;scratch;;;Das Mäuschen stellt sich in den Weg.
+1;cheese;1;spawned;sniff;;;*schnüffel* Das ist Käse!
+1;cheese;1;spawned;item;wool;;ERROR
+1;cheese;1;spawned;item;key;;Das Mäuschen stellt sich in den Weg.

@@ -14,14 +14,5 @@ public class ColoredPanel {
 		panel.setLayout(null);
 		return panel;
 	}
-	
-	public static JPanel create(Color color, Color border, int x, int y, int width, int height) {
-		JPanel panel = new JPanel();
-		panel.setBackground(color);
-		panel.setBorder(BorderFactory.createLineBorder(border));
-		panel.setBounds(x, y, width, height);
-		panel.setLayout(null);
-		return panel;
-	}
 
 }
