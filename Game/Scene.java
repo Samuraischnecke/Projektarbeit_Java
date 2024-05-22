@@ -5,10 +5,11 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.text.html.ImageView;
 
-public class Scene extends JPanel implements MouseListener {
+public class Scene extends JLayeredPane implements MouseListener {
 	private int scene = 0;
 	private ArrayList<ImageObject> currentSceneObjects = new ArrayList<>();
 	private ArrayList<ImageObject> previousSceneObjects = new ArrayList<>();
@@ -17,13 +18,13 @@ public class Scene extends JPanel implements MouseListener {
 	public static int currentBoxState = 1;
 	public static int currentMouseState = 1;
 	public static int currentTreeState = 1;
-	public static int currentWoolState = 1;
+	public static int currentWoolState = 0;
 	public static int currentDoorState = 1;
 	public static int currentCheeseState = 0;
 
 	public Scene() {
 		this.setOpaque(false);
-		this.setBounds(10, 10, 1260, 650);
+		this.setBounds(0, 0, 1280, 660);
 		this.setLayout(null);
 
 		createAllObjects();
@@ -52,12 +53,18 @@ public class Scene extends JPanel implements MouseListener {
 	}
 
 	private void createAllObjects() {
-		box = new ImageObject("Box", "box", currentBoxState, 700, 120, 525, 513);
-		mouse = new ImageObject("Maus", "mouse", currentMouseState, 200, 200, 90, 90);
-		tree = new ImageObject("Baum", "tree", currentTreeState, 200, 300, 90, 90);
-		wool = new ImageObject("Wollknäul", "wool", currentWoolState, 200, 400, 90, 90);
-		door = new ImageObject("Tür", "door", currentDoorState, 300, 200, 90, 90);
-		cheese = new ImageObject("Käse", "cheese", currentCheeseState, 300, 300, 90, 90);
+		box = new ImageObject("Box", "box", currentBoxState, 550, 100, 525, 513);
+		box.getButton().setBounds(150, 50, 250, 250);
+		mouse = new ImageObject("Maus", "mouse", currentMouseState, 1100, 400, 231, 137);
+		mouse.getButton().setBounds(0, 0, 231, 137);
+		tree = new ImageObject("Baum", "tree", currentTreeState, 350, -100, 275, 565);
+		tree.getButton().setBounds(0, 0, 275, 565);
+		wool = new ImageObject("Wollknäul", "wool", currentWoolState, 500, 390, 100, 100);
+		wool.getButton().setBounds(0, 0, 100, 100);
+		door = new ImageObject("Tür", "door", currentDoorState, 20, 100, 411, 371);
+		door.getButton().setBounds(0, 0, 411, 371);
+		cheese = new ImageObject("Käse", "cheese", currentCheeseState, 615, 55, 525, 513);
+		cheese.getButton().setBounds(248, 190, 103, 108);
 	}
 
 	public void changeObjectState(ImageObject object, int state) {
@@ -71,11 +78,11 @@ public class Scene extends JPanel implements MouseListener {
 	public void highlightCurrentObjects(boolean highlightObject) {
 		if (highlightObject) {
 			for (ImageObject object : getCurrentSceneObjects()) {
-				object.setEnabled(false);
+				object.getButton().setEnabled(false);
 			}
 		} else {
 			for (ImageObject object : getCurrentSceneObjects()) {
-				object.setEnabled(true);
+				object.getButton().setEnabled(true);
 			}
 		}
 	}
@@ -94,6 +101,13 @@ public class Scene extends JPanel implements MouseListener {
 
 		currentSceneObjects.clear();
 		calculateScene();
+		
+		this.setComponentZOrder(box, 3);
+		this.setComponentZOrder(mouse, 1);
+		this.setComponentZOrder(tree, 2);
+		this.setComponentZOrder(wool, 1);
+		this.setComponentZOrder(door, 1);
+		this.setComponentZOrder(cheese, 2);
 	}
 
 	public ArrayList<ImageObject> getPreviousSceneObjects() {

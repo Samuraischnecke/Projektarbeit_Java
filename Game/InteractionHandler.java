@@ -1,6 +1,5 @@
 package Game;
 
-import java.awt.Container;
 import java.util.List;
 
 import util.FileReader;
@@ -67,42 +66,42 @@ public class InteractionHandler {
 			Main.write("ERROR: 404 Meow (^w^)", true);
 			break;
 		case "drop_wool":
-			Main.getGameContent().getTree().setState(2);
-			Main.getGameContent().getWool().setState(2);
-			Main.getGameContent().getWool().setBounds(400, 300, 90, 90);
-			// ToDo: Move wool object
+			Main.getGameContent().getTree().setState(2);	// Tree has been scratched
+			Main.getGameContent().getWool().setState(1);	// Wool has been dropped
 			break;
 		case "take_wool":
 			itemName = "wool";
-			Main.getGameContent().getWool().setState(0);
-			Main.getItemButton().setEnabled(true);
+			Main.getItemButton().setIcon(itemName);
+			Main.getGameContent().getWool().setState(0);	// Wool has been picked up
 			break;
 		case "attach_wool":
 			itemName = "";
-			Main.getGameContent().getBox().setState(2);
+			Main.getGameContent().getBox().setState(2);		// Wool has been attached to box
 			Main.getItemButton().setEnabled(false);
 			break;
 		case "open_box":
-			Main.getGameContent().getBox().setState(3);
-			Main.getGameContent().getMouse().setState(2);
-			Main.getGameContent().getMouse().setBounds(600, 300, 90, 90);
-			Main.getGameContent().getCheese().setState(1);
+			Main.getGameContent().getBox().setState(3);		// Box has opened
+			Main.getGameContent().getBox().remove(Main.getGameContent().getBox().getButton());	// Box is not clickable anymore
+			Main.getGameContent().getCheese().setState(1);	// The cheese has spawned
+			Main.getGameContent().getMouse().setState(2);	// Mouse is awake
+			Main.getGameContent().getMouse().setBounds(660, 260, 189, 222);	// Mouse runs to the cheese
+			Main.getGameContent().getMouse().getButton().setBounds(0, 0, 189, 222);	// Mouse has new hitbox
 			break;
 		case "start_dialog":
-			Main.write("Hallo Herr Katzi.", false);
-			Main.write("Hallo Herr Mausi.", false);
-			Main.write("Blablabla, so traurig hier eingesperrt zu sein...", false);
-			Main.write("Oh nein, Mitleid! Hier Schlüssel!.", false);
-			Main.getGameContent().getMouse().setState(3);
+			Main.write("Mausi: Schönen guten Tag, Herr Katzi.", false);
+			Main.write("„Hollerö! Weißt du, wie ich hier wieder rauskomme? Die Tür ist zugesperrt!“", false);
+			Main.write("Mausi: „Hm, mal schauen, ob der Schlüssel hier wieder irgendwo steckt...“", false);
+			Main.getGameContent().getMouse().setState(3);	// Mouse has completed dialog
 			itemName = "key";
-			Main.getItemButton().setEnabled(true);
+			Main.getItemButton().setIcon(itemName);
 			break;
 		case "open_door":
-			Main.getGameContent().getDoor().setState(2);
+			Main.getGameContent().getDoor().setState(2);	// Door has been opened
 			Main.getItemButton().setEnabled(false);
 			break;
 		case "leave_room":
-			// ToDo: Change scene to 2
+			Main.write("Katzi entschwindet durch die Tür.", true);
+			Main.showEndScreen();
 			break;
 		}
 	}

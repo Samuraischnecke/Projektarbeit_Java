@@ -1,9 +1,11 @@
 package Game;
 
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
 
 public class ActionButton extends JToggleButton {
@@ -16,16 +18,23 @@ public class ActionButton extends JToggleButton {
 		this.setText(title);
 		this.setName(name);
 		this.setBounds(x, y, width, height);
+		this.setMargin(new Insets(0, 0, 0, 0));
 		this.addActionListener(gameActionListener);
 		buttons.add(this);
+		setIcon("paw");
 	}
 
 	public static ArrayList<ActionButton> getButtons() {
 		return buttons;
 	}
 
-	public void setIcon() {
-
+	public void setIcon(String item) {
+		if (this.getName() == "item") {
+			this.setEnabled(true);
+			this.setIcon(new ImageIcon(this.getClass().getResource("/images/" + item + ".png")));
+			this.setDisabledIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));
+			this.setDisabledSelectedIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));			
+		}
 	}
 
 	private void processAction(String action) {

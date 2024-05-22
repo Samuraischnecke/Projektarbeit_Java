@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -23,13 +24,13 @@ public class Main extends JFrame implements ActionListener {
 
 	private JLayeredPane gameSpace;
 	private static Scene gameContent;
-	private JPanel gameMenu, systemMenu;
-	private JLabel sceneBackground;
-	private ImageIcon image;
+	private JPanel gameMenu, helpMenu, systemMenu;
+	private JLabel sceneBackground, sceneProtagonist, helpScreen;
+	private ImageIcon background, protagonist, help, end;
 
 	private JScrollPane gameTextBox;
 	private static JTextPane gameText;
-	private static JLabel gameObjectText;
+	private static JLabel gameObjectText, endScreen;
 
 	private boolean isHighlighted = false;
 	private static FileReader fr;
@@ -37,7 +38,7 @@ public class Main extends JFrame implements ActionListener {
 	static ButtonGroup gameActionButtonGroup;
 	private static ActionButton buttonInspect, buttonTake, buttonUse, buttonTalk, buttonScratch, buttonSniff,
 			buttonItem;
-	private SystemButton buttonHighlight, buttonSystem, buttonContinue, buttonNew, buttonSave, buttonLoad, buttonClose;
+	private SystemButton buttonHelp, buttonSystem, buttonContinue, buttonNew, buttonSave, buttonLoad, buttonClose;
 
 	private static final int WIDTH = 1280;
 	private static final int HEIGHT = 800;
@@ -66,7 +67,7 @@ public class Main extends JFrame implements ActionListener {
 		this.setSize(WINDOW_SIZE); // 1280 x 800 Resolution PLUS Title Bar and Borders
 		this.setResizable(false);
 		this.setLayout(null);
-		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(("/images/cat.png"))));
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(("/images/logo.png"))));
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -93,7 +94,15 @@ public class Main extends JFrame implements ActionListener {
 		gameContent = new Scene();
 
 		gameSpace.add(getGameContent(), JLayeredPane.PALETTE_LAYER);
+		
+		endScreen = new JLabel();
+		endScreen.setSize(RESOLUTION);
+		end = new ImageIcon(this.getClass().getResource("/images/end.png"));
+		endScreen.setIcon(end);
+		endScreen.setVisible(false);
+		gameSpace.add(endScreen, JLayeredPane.DRAG_LAYER);
 
+		createProtagonist();
 		createSceneBackground();
 
 		createSystemMenu();
@@ -102,15 +111,34 @@ public class Main extends JFrame implements ActionListener {
 	private void createGameMenu() {
 		gameMenu = ColoredPanel.create(Color.ORANGE, 10, 670, 1260, 120);
 
-		gameSpace.add(gameMenu, JLayeredPane.PALETTE_LAYER);
+		gameSpace.add(gameMenu, JLayeredPane.DRAG_LAYER);
 
 		createGameMenuButtons();
+	}
+
+	private void createHelpMenu() {
+		helpMenu = ColoredPanel.create(Color.ORANGE, 10, 10, 990, 660);
+		helpMenu.setVisible(false);		
+		
+		gameSpace.add(helpMenu, JLayeredPane.DRAG_LAYER);
+
+		createHelpMenuScreen();
+	}
+	
+
+
+	private void createHelpMenuScreen() {
+		helpScreen = new JLabel();
+		helpScreen.setBounds(0, 0, 990, 660);
+		help = new ImageIcon(this.getClass().getResource("/images/help.png"));
+		helpScreen.setIcon(help);
+		helpMenu.add(helpScreen);
 	}
 
 	private void createSystemMenu() {
 		systemMenu = ColoredPanel.create(Color.ORANGE, 1000, 355, 270, 315);
 
-		gameSpace.add(systemMenu, JLayeredPane.MODAL_LAYER);
+		gameSpace.add(systemMenu, JLayeredPane.DRAG_LAYER);
 
 		createSystemMenuButtons();
 	}
@@ -122,7 +150,7 @@ public class Main extends JFrame implements ActionListener {
 		buttonTalk = new ActionButton("Sprechen", "talk", 295, 65, 250, 45);
 		buttonScratch = new ActionButton("Kratzen", "scratch", 580, 10, 250, 45);
 		buttonSniff = new ActionButton("Schnüffeln", "sniff", 580, 65, 250, 45);
-		buttonItem = new ActionButton("ITEM", "item", 865, 10, 100, 100);
+		buttonItem = new ActionButton("", "item", 865, 10, 100, 100);
 
 		gameActionButtonGroup = new ButtonGroup();
 
@@ -132,16 +160,18 @@ public class Main extends JFrame implements ActionListener {
 			gameMenu.add(button);
 		}
 
-		buttonHighlight = new SystemButton("Katzenaugen", "highlight", 1000, 65, 250, 45);
+		buttonHelp = new SystemButton("Katzenaugen", "help", 1000, 65, 250, 45);
 		buttonSystem = new SystemButton("Hauptmenü", "system", 1000, 10, 250, 45);
 
-		buttonHighlight.addActionListener(this);
+		buttonHelp.addActionListener(this);
 		buttonSystem.addActionListener(this);
 
-		gameMenu.add(buttonHighlight);
+		gameMenu.add(buttonHelp);
 		gameMenu.add(buttonSystem);
 
 		changeFont(gameMenu, menuFont);
+
+		createHelpMenu();
 	}
 
 	private void createSystemMenuButtons() {
@@ -153,6 +183,7 @@ public class Main extends JFrame implements ActionListener {
 
 		buttonContinue.setEnabled(false);
 		buttonSave.setEnabled(false);
+		buttonLoad.setEnabled(false); // ToDo: Remove on database implementation
 
 		for (SystemButton button : SystemButton.getButtons()) {
 			button.addActionListener(this);
@@ -194,6 +225,15 @@ public class Main extends JFrame implements ActionListener {
 		write("Spiel geladen!", true);
 	}
 
+	private void createProtagonist() {
+		sceneProtagonist = new JLabel();
+		sceneProtagonist.setBounds(550, 485, 413, 317); // at center
+		protagonist = new ImageIcon(this.getClass().getResource("/images/protagonist.png"));
+		sceneProtagonist.setIcon(protagonist);
+
+		gameSpace.add(sceneProtagonist, JLayeredPane.POPUP_LAYER);
+	}
+
 	private void createSceneBackground() {
 		sceneBackground = new JLabel();
 		sceneBackground.setBounds(0, 0, 1280, 800);
@@ -202,8 +242,8 @@ public class Main extends JFrame implements ActionListener {
 	}
 
 	private void setSceneBackground() {
-		image = new ImageIcon(this.getClass().getResource("/images/scene" + getGameContent().getScene() + ".png"));
-		sceneBackground.setIcon(image);
+		background = new ImageIcon(this.getClass().getResource("/images/scene" + getGameContent().getScene() + ".png"));
+		sceneBackground.setIcon(background);
 	}
 
 	private void createGameTextLog() {
@@ -216,19 +256,21 @@ public class Main extends JFrame implements ActionListener {
 
 		// persistent text log is placed inside a scrollable pane
 		gameTextBox = new JScrollPane(gameText);
-		gameTextBox.setBounds(15, 15, 450, 105);
+		gameTextBox.setBounds(10, 480, 500, 180);
+		gameTextBox.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		// remove ugly scrollbars, scroll is still functional:
 		gameTextBox.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		gameTextBox.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		// This is the hover object label
 		gameObjectText = new JLabel();
-		gameObjectText.setBounds(10, 619, 270, 50);
+		gameObjectText.setBounds(1000, 619, 270, 50);
 		gameObjectText.setHorizontalAlignment(SwingConstants.CENTER);
 		gameObjectText.setForeground(Color.WHITE);
 		gameObjectText.setBackground(Color.BLACK);
+		gameObjectText.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		gameObjectText.setOpaque(true);
-		gameObjectText.setFont(gameFont);
+		gameObjectText.setFont(menuFont);
 
 		gameSpace.add(gameTextBox, JLayeredPane.MODAL_LAYER);
 		gameSpace.add(gameObjectText, JLayeredPane.MODAL_LAYER);
@@ -253,8 +295,7 @@ public class Main extends JFrame implements ActionListener {
 		if (text.startsWith("„")) {
 			// dialog is in quotes, will be output in green
 			gameText.setCharacterAttributes(yellow, true);
-		} else if (text.startsWith("*")) {
-			// sniffing starts with the emote *sniff*, will be output in gray
+		} else if (text.startsWith("Mausi:")) {
 			gameText.setCharacterAttributes(gray, true);
 		} else {
 			// default flavour text will be output in white
@@ -317,10 +358,10 @@ public class Main extends JFrame implements ActionListener {
 			gameActionButtonGroup.clearSelection();
 			InteractionHandler.setAction("");
 		}
-		if (e.getSource() == buttonHighlight) {
-			systemMenu.setVisible(false);
-			isHighlighted = !isHighlighted;
-			getGameContent().highlightCurrentObjects(isHighlighted);
+		if (e.getSource() == buttonHelp) {
+			helpMenu.setVisible(!helpMenu.isVisible());
+			gameActionButtonGroup.clearSelection();
+			InteractionHandler.setAction("");
 		}
 
 		if (e.getSource() instanceof ActionButton) {
@@ -332,6 +373,16 @@ public class Main extends JFrame implements ActionListener {
 
 	public static JLabel getGameObjectText() {
 		return gameObjectText;
+	}
+	
+	public static void showEndScreen() {
+		try {
+			TimeUnit.SECONDS.sleep(2);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		endScreen.setVisible(true);
 	}
 
 	public static Scene getGameContent() {
