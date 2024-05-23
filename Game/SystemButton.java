@@ -15,6 +15,7 @@ public class SystemButton extends JButton {
 		buttons.add(this);
 	}
 
+	// used in Main to fill system menu with system buttons
 	public static ArrayList<SystemButton> getButtons() {
 		return buttons;
 	}

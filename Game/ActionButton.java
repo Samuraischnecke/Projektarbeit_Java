@@ -25,23 +25,13 @@ public class ActionButton extends JToggleButton {
 		setIcon("paw");
 	}
 
-	public static ArrayList<ActionButton> getButtons() {
-		return buttons;
-	}
-
-	public void setIcon(String item) {
-		if (this.getName() == "item") {
-			this.setEnabled(true);
-			this.setIcon(new ImageIcon(this.getClass().getResource("/images/" + item + ".png")));
-			this.setDisabledIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));
-			this.setDisabledSelectedIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));
-		}
-	}
-
+	// Output a horizontal line to signal start of new action
+	// Then ask question related to each action.
 	private void processAction(String action) {
 		Main.write("-------------------", false);
 		switch (action) {
 		default:
+			// Unknown action has been performed somehow:
 			Main.write("Was soll ich tun?", false);
 			break;
 		case "inspect":
@@ -65,13 +55,28 @@ public class ActionButton extends JToggleButton {
 		case "item":
 			Main.write("Womit soll ich das verwenden?", false);
 			break;
-		case "highlight":
-			// Highlight Action will be handled seperately in Main Action Listener
-			break;
 		}
+		// sets currently toggled action button in InteractionHandler
 		InteractionHandler.setAction(action);
 	}
 
+	// Constructor and InteractionHandler can use this to change active item icon
+	public void setIcon(String item) {
+		if (this.getName() == "item") {
+			this.setEnabled(true);
+			this.setIcon(new ImageIcon(this.getClass().getResource("/images/" + item + ".png")));
+			this.setDisabledIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));
+			this.setDisabledSelectedIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));
+		}
+	}
+
+	// used in Main to fill game menu with action buttons
+	public static ArrayList<ActionButton> getButtons() {
+		return buttons;
+	}
+
+	// on ActionButton toggle, write context to log
+	// and save selection in InteractionHandler
 	public class GameActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {

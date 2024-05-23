@@ -6,19 +6,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class ImageObject extends JPanel {
+	
+	// The image objects only handles displaying the correct image
+	// It creates a button to handle events
 
-	private ImageButton button;
-	private JLabel imageSpace;
+	private ImageButton button; // created by each imageObject to handle events
+	private JLabel imageSpace; // helper JLabel used to display image in Panel
 
-	private String title; // Readable object name in game
-	private String name; // Identifier that will be used for logic
-	private int state; // modifier for current object state
+	private String name; // used to set image icon
+	private int state; // used to set image icon
+
 	private ImageIcon image; // image currently used in imageSpace
-	private int width, height; // properties used to calculate imageSpace
 
 	public ImageObject(String title, String name, int state, int x, int y, int width, int height) {
-		this.title = title;
 		this.name = name;
+		this.state = state;
 		this.setLayout(null);
 		this.setOpaque(false);
 		this.setBounds(x, y, width, height);
@@ -27,10 +29,19 @@ public class ImageObject extends JPanel {
 		this.add(imageSpace);
 
 		button = new ImageButton(title, name);
-		button.setName(name);
 		this.add(button);
 
-		setState(state);		
+		// Pass state to button
+		setState(state);
+	}
+
+	private void setIcon() {
+		if (state != 0) {
+			// fetch currently used image by object name and state
+			image = new ImageIcon(this.getClass().getResource("/images/" + name + state + ".png"));
+			imageSpace.setBounds(0, 0, image.getIconWidth(), image.getIconHeight());
+			imageSpace.setIcon(image);
+		}
 	}
 
 	public void setState(int state) {
@@ -46,35 +57,10 @@ public class ImageObject extends JPanel {
 		this.setIcon();
 	}
 
-	private void setIcon() {
-		if (state != 0) {
-			// fetch currently used image by object name and state
-			image = new ImageIcon(this.getClass().getResource("/images/" + name + state + ".png"));
-			height = image.getIconHeight();
-			width = image.getIconWidth();
-			imageSpace.setBounds(0, 0, width, height);
-			imageSpace.setIcon(image);
-		}
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getState() {
-		return state;
-	}
-
+	// Returns button connected to the object
+	// Used by Scene and InteractionHandler to set and move hitboxes
 	public JButton getButton() {
 		return button;
-	}
-
-	public Object getObjectByName(String objectName) {
-		return this;
 	}
 
 }

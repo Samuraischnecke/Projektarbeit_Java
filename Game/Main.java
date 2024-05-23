@@ -77,7 +77,7 @@ public class Main extends JFrame implements ActionListener {
 		getGameContent().setScene(0);
 	}
 
-	public void changeFont(Component component, Font font) {
+	private void changeFont(Component component, Font font) {
 		component.setFont(font);
 		if (component instanceof Container) {
 			for (Component child : ((Container) component).getComponents()) {
@@ -102,7 +102,7 @@ public class Main extends JFrame implements ActionListener {
 		end = new ImageIcon(this.getClass().getResource("/images/end.png"));
 		endScreen.setIcon(end);
 		endScreen.setVisible(false);
-		gameSpace.add(endScreen, JLayeredPane.POPUP_LAYER);
+		gameSpace.add(endScreen, JLayeredPane.DRAG_LAYER);
 
 		createProtagonist();
 		createSceneBackground();
@@ -181,8 +181,10 @@ public class Main extends JFrame implements ActionListener {
 		buttonNew = new SystemButton("Neues Spiel", "new", 10, 205, 250, 45);
 		buttonClose = new SystemButton("Beenden", "close", 10, 260, 250, 45);
 
+		// Can't use continue and save game function during Intro
 		buttonContinue.setEnabled(false);
 		buttonSave.setEnabled(false);
+		
 		buttonLoad.setEnabled(false); // ToDo: Remove on database implementation
 
 		for (SystemButton button : SystemButton.getButtons()) {
@@ -193,40 +195,7 @@ public class Main extends JFrame implements ActionListener {
 		changeFont(systemMenu, menuFont);
 	}
 
-	private void startNewGame() {
-		createGameMenu();
-		createGameTextLog();
-		sceneProtagonist.setVisible(true);
-		getGameContent().setScene(1);
-
-		buttonItem.setEnabled(false);
-		buttonContinue.setEnabled(true);
-		// buttonSave.setEnabled(true); // ToDo: Uncomment on database implementation
-		buttonNew.setEnabled(false); // ToDo: Remove after fixing issues with calling startNewGame from running game
-
-//		resetCurrentObjects();	// ToDo:
-		setSceneBackground();
-
-		systemMenu.setVisible(false);
-		write("Neues Spiel gestartet!", true);
-	}
-
-	private void startFromLoad(int scene) {
-		createGameMenu();
-		createGameTextLog();
-		sceneProtagonist.setVisible(true);
-		getGameContent().setScene(scene);
-
-		buttonContinue.setEnabled(true);
-		// buttonSave.setEnabled(true); // ToDo: Uncomment on database implementation
-		buttonNew.setEnabled(false); // ToDo: Remove after fixing issues with calling startNewGame from running game
-
-		setSceneBackground();
-
-		systemMenu.setVisible(false);
-		write("Spiel geladen!", true);
-	}
-
+	// puts the protagonist image in place above the game menu
 	private void createProtagonist() {
 		sceneProtagonist = new JLabel();
 		sceneProtagonist.setBounds(550, 485, 413, 317); // at center
@@ -237,6 +206,7 @@ public class Main extends JFrame implements ActionListener {
 		gameSpace.add(sceneProtagonist, JLayeredPane.POPUP_LAYER);
 	}
 
+	// puts the protagonist.png in place above the game menu
 	private void createSceneBackground() {
 		sceneBackground = new JLabel();
 		sceneBackground.setBounds(0, 0, 1280, 800);
@@ -246,9 +216,61 @@ public class Main extends JFrame implements ActionListener {
 		setSceneBackground();
 	}
 
+	// sets the current game state environment background (or intro scene)
 	private void setSceneBackground() {
 		background = new ImageIcon(this.getClass().getResource("/images/scene" + getGameContent().getScene() + ".png"));
 		sceneBackground.setIcon(background);
+	}
+
+	private void startNewGame() {
+		// creates game menu, text log and protagonist from here
+		// Should not be visible in intro screen, yet
+		createGameMenu();
+		createGameTextLog();
+		sceneProtagonist.setVisible(true);
+
+		// sets scene 1
+		getGameContent().setScene(1);
+		setSceneBackground();
+		InteractionHandler.clearItem();
+
+		// Enable continue and save game after Intro
+		buttonContinue.setEnabled(true);
+		// buttonSave.setEnabled(true); // ToDo: Uncomment on database implementation
+
+		write("Neues Spiel gestartet!", true);
+	}
+
+	private void restartGame() {
+		// setScene triggers a removal of previous game objects
+		// and places new initial game objects
+		getGameContent().setScene(1);
+		setSceneBackground();
+
+		// reset currently held item and game log
+		InteractionHandler.clearItem();
+		gameText.setText("");
+
+		write("Spiel neugestartet!", true);
+	}
+
+	// ToDo: Use and check after database implementation!
+	private void startFromLoad(int scene) {
+		// creates game menu, text log and protagonist from here
+		// Should not be visible in intro screen, yet
+		createGameMenu();
+		createGameTextLog();
+		sceneProtagonist.setVisible(true);
+
+		// sets scene fetched from selected database entry
+		// ToDo: May need to pass more database info (object state) to SceneHandler
+		getGameContent().setScene(scene);
+		setSceneBackground();
+
+		buttonContinue.setEnabled(true);
+		// buttonSave.setEnabled(true); // ToDo: Uncomment on database implementation
+
+		write("Spiel geladen!", true);
 	}
 
 	private void createGameTextLog() {
@@ -289,6 +311,40 @@ public class Main extends JFrame implements ActionListener {
 		green = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.GREEN);
 	}
 
+	// ToDo: Change OK_CANCEL_OPTION to YES_NO_CANCEL_OPTION on database
+	// implementation and add save functionality
+	private boolean confirmedRestart() {
+		String options[] = { "Ja, Spiel neu starten", "Abbrechen" };
+		int optionValue = JOptionPane.showOptionDialog(this,
+				"Sind Sie sicher, dass Sie das Spiel neu starten möchten?\nEs gibt noch keinen gespeicherten Spielstand!",
+				"Spiel neu starten?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+				options[1]);
+
+		if (optionValue == JOptionPane.OK_OPTION)
+			// Bestätigen - Spiel wird neu gestartet
+			return true;
+		else
+			// Abbrechen - Zurück ins Spiel
+			return false;
+	}
+
+	// ToDo: Change OK_CANCEL_OPTION to YES_NO_CANCEL_OPTION on database
+	// implementation and add save functionality
+	private boolean confirmedExit() {
+		String options[] = { "Ja, Spiel verlassen", "Abbrechen" };
+		int optionValue = JOptionPane.showOptionDialog(this,
+				"Sind Sie sicher, dass Sie das Spiel beenden möchten?\nDer Spielstand kann leider noch nicht gespeichert werden!",
+				"Spiel beenden?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+				options[1]);
+
+		if (optionValue == JOptionPane.OK_OPTION)
+			// Bestätigen - Spiel wird beendet
+			return true;
+		else
+			// Abbrechen - Zurück ins Spiel
+			return false;
+	}
+
 	// Write text to persistent game log
 	public static void write(String text, boolean isMessage) {
 		// It's not possible to use an "append" text like in a TextArea,
@@ -301,9 +357,10 @@ public class Main extends JFrame implements ActionListener {
 			// dialog is in quotes, will be output in green
 			gameText.setCharacterAttributes(yellow, true);
 		} else if (text.startsWith("Mausi:") || text.startsWith("-")) {
+			// Mausi dialog will be output in lightgray
 			gameText.setCharacterAttributes(gray, true);
 		} else {
-			// default flavour text will be output in white
+			// default (flavour) text will be output in white
 			gameText.setCharacterAttributes(white, true);
 		}
 		// overwrite color if it's a system message
@@ -317,8 +374,7 @@ public class Main extends JFrame implements ActionListener {
 			}
 		}
 		if (gameText.getDocument().getLength() != 0) {
-			// to prevent an empty line at the bottom, add the line break before the text,
-			// not after
+			// to prevent an empty line at the bottom, add the line break BEFORE the text
 			gameText.replaceSelection("\n" + text);
 		} else {
 			// no linebreak before text on the first line
@@ -341,21 +397,24 @@ public class Main extends JFrame implements ActionListener {
 			systemMenu.setVisible(false);
 			// ToDo: database implementation
 			// ToDo: load game from database info, something like:
-//			startFromLoad(database.getSaveFile.getScene());	// open database table selection
-			startFromLoad(1); // Todo: Remove after database implementation
+//			startFromLoad(database.getSaveFiles());	// display all save files in a list view with info
 		}
 		if (e.getSource() == buttonNew) {
+			// Scene is intro screen:
 			if (getGameContent().getScene() == 0) {
 				startNewGame();
-			} else {
-				// ToDo: warning dialog before starting new game
-				// Are you sure you want to start a new game?
-				startNewGame();
+				systemMenu.setVisible(false);
+				// Scene has already started:
+			} else if (confirmedRestart()) {
+				restartGame();
+				helpMenu.setVisible(false);
+				systemMenu.setVisible(false);
 			}
 		}
 		if (e.getSource() == buttonClose) {
-			// ToDo: warning dialog before closing, save game?
-			this.dispose();
+			if (confirmedExit()) {
+				this.dispose();
+			}
 		}
 
 		if (e.getSource() == buttonSystem) {
@@ -377,6 +436,7 @@ public class Main extends JFrame implements ActionListener {
 		}
 	}
 
+	// Accessed from Scene Mouse Listener to display currently hovered Object name
 	public static JLabel getGameObjectLabel() {
 		return gameObjectLabel;
 	}
@@ -395,7 +455,5 @@ public class Main extends JFrame implements ActionListener {
 
 	public static ButtonGroup getGameActionButtonGroup() {
 		return gameActionButtonGroup;
-
 	}
-
 }
