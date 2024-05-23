@@ -2,12 +2,10 @@ package Game;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.text.html.ImageView;
+
+import java.util.ArrayList;
 
 public class Scene extends JLayeredPane implements MouseListener {
 	private int scene = 0;
@@ -15,12 +13,12 @@ public class Scene extends JLayeredPane implements MouseListener {
 	private ArrayList<ImageObject> previousSceneObjects = new ArrayList<>();
 	private ImageObject box, mouse, tree, wool, door, cheese;
 
-	public static int currentBoxState = 1;
-	public static int currentMouseState = 1;
-	public static int currentTreeState = 1;
-	public static int currentWoolState = 0;
-	public static int currentDoorState = 1;
-	public static int currentCheeseState = 0;
+	private static int currentBoxState = 1;
+	private static int currentMouseState = 1;
+	private static int currentTreeState = 1;
+	private static int currentWoolState = 0;
+	private static int currentDoorState = 1;
+	private static int currentCheeseState = 0;
 
 	public Scene() {
 		this.setOpaque(false);
@@ -102,12 +100,15 @@ public class Scene extends JLayeredPane implements MouseListener {
 		currentSceneObjects.clear();
 		calculateScene();
 		
-		this.setComponentZOrder(box, 3);
-		this.setComponentZOrder(mouse, 1);
-		this.setComponentZOrder(tree, 2);
-		this.setComponentZOrder(wool, 1);
-		this.setComponentZOrder(door, 1);
-		this.setComponentZOrder(cheese, 2);
+		if (scene == 1) {
+			// Scene1 object order - lowest number will be rendered last / displayed on top
+			this.setComponentZOrder(box, 3);
+			this.setComponentZOrder(mouse, 1);
+			this.setComponentZOrder(tree, 2);
+			this.setComponentZOrder(wool, 1);
+			this.setComponentZOrder(door, 3);
+			this.setComponentZOrder(cheese, 2);
+		}
 	}
 
 	public ArrayList<ImageObject> getPreviousSceneObjects() {
@@ -145,7 +146,7 @@ public class Scene extends JLayeredPane implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		Main.gameActionButtonGroup.clearSelection();
+		Main.getGameActionButtonGroup().clearSelection();
 		InteractionHandler.startInteraction(((ImageButton) e.getSource()));
 	}
 
@@ -161,12 +162,12 @@ public class Scene extends JLayeredPane implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		Main.getGameObjectText().setText(((ImageButton) e.getSource()).getTitle());
+		Main.getGameObjectLabel().setText(((ImageButton) e.getSource()).getTitle());
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		Main.getGameObjectText().setText("");
+		Main.getGameObjectLabel().setText("");
 	}
 
 }

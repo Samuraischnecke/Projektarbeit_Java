@@ -14,10 +14,8 @@ public class FileReader {
 	private String line;
 
 	public FileReader() {
-
 		try {
-			file = new Scanner(new FileInputStream("C:\\eclipse\\workspace\\Projektarbeit\\src\\script\\script.csv"));
-			// ToDo: Replace with relative file path
+			file = new Scanner(new FileInputStream("src/script/script.csv"));
 			while (file.hasNextLine()) {
 				line = file.nextLine();
 				String[] values = line.split(";");

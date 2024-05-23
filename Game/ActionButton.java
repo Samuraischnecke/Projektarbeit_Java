@@ -3,10 +3,11 @@ package Game;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JToggleButton;
+
+import java.util.ArrayList;
 
 public class ActionButton extends JToggleButton {
 
@@ -33,11 +34,12 @@ public class ActionButton extends JToggleButton {
 			this.setEnabled(true);
 			this.setIcon(new ImageIcon(this.getClass().getResource("/images/" + item + ".png")));
 			this.setDisabledIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));
-			this.setDisabledSelectedIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));			
+			this.setDisabledSelectedIcon(new ImageIcon(this.getClass().getResource("/images/paw.png")));
 		}
 	}
 
 	private void processAction(String action) {
+		Main.write("-------------------", false);
 		switch (action) {
 		default:
 			Main.write("Was soll ich tun?", false);

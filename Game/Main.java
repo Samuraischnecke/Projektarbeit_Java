@@ -9,58 +9,57 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
+import javax.swing.text.*;
 
 import util.ColoredPanel;
+import util.CustomFont;
 import util.FileReader;
 
 public class Main extends JFrame implements ActionListener {
 
-	private JLayeredPane gameSpace;
-	private static Scene gameContent;
-	private JPanel gameMenu, helpMenu, systemMenu;
-	private JLabel sceneBackground, sceneProtagonist, helpScreen;
-	private ImageIcon background, protagonist, help, end;
-
-	private JScrollPane gameTextBox;
-	private static JTextPane gameText;
-	private static JLabel gameObjectText, endScreen;
-
-	private boolean isHighlighted = false;
-	private static FileReader fr;
-
-	static ButtonGroup gameActionButtonGroup;
-	private static ActionButton buttonInspect, buttonTake, buttonUse, buttonTalk, buttonScratch, buttonSniff,
-			buttonItem;
-	private SystemButton buttonHelp, buttonSystem, buttonContinue, buttonNew, buttonSave, buttonLoad, buttonClose;
-
 	private static final int WIDTH = 1280;
 	private static final int HEIGHT = 800;
-	private static final int OFFSET_WIDTH = 16;
-	private static final int OFFSET_HEIGHT = 39;
-	private static final Dimension RESOLUTION = new Dimension(WIDTH, HEIGHT);
-	private static final Dimension WINDOW_SIZE = new Dimension(WIDTH + OFFSET_WIDTH, HEIGHT + OFFSET_HEIGHT);
+	private static final int OFFSET_WIDTH = 16; // some sort of border added by frame
+	private static final int OFFSET_HEIGHT = 39; // title bar height added by frame
+	private static final Dimension RESOLUTION = new Dimension(WIDTH, HEIGHT); // target resolution I chose
+	private static final Dimension WINDOW_SIZE = new Dimension(WIDTH + OFFSET_WIDTH, HEIGHT + OFFSET_HEIGHT); // actual
+																												// window
+																												// size
+	private static final Font menuFont = new Font("Fixedsys Excelsior 301", 0, 32); // font used for menu buttons
+	private static final Font gameFont = new Font("Fixedsys Excelsior 301", 0, 22); // font used for text log
 
-	private static final Font menuFont = new Font("Arial", 0, 28);
-	private static final Font gameFont = new Font("Consola", 0, 20);
-	private static StyleContext sc = StyleContext.getDefaultStyleContext();
-	private static AttributeSet yellow, gray, white, red, green;
+	private JLayeredPane gameSpace; // Contains all background, menus, game content space, overlays, ...
+	private static Scene gameContent; // Contains currently displayed game scene and content
+	private JPanel gameMenu, helpMenu, systemMenu; // the 3 topmost spaces with important functionality, info and
+													// buttons
+	private JLabel sceneBackground, sceneProtagonist, helpScreen; // helper JLabels to place (background) images in
+																	// JPanels
+	private static JLabel endScreen; // helper needs to be accessed from InteractionHandler
+	private ImageIcon background, protagonist, help, end; // images to be placed inside the helper JLabels
+
+	private JScrollPane gameTextBox; // Scrollable space for the ingame log
+	private static JTextPane gameText; // Ingame text log, will be written to by InteractionHandler etc.
+	private static JLabel gameObjectLabel; // Displays currently hovered object labels
+	private static AttributeSet yellow, gray, white, red, green; // Styles used for game text log
+
+	private static FileReader fr; // Helper used to read and save script.csv
+
+	private SystemButton buttonHelp, buttonSystem, buttonContinue, buttonNew, buttonSave, buttonLoad, buttonClose;
+	private ActionButton buttonInspect, buttonTake, buttonUse, buttonTalk, buttonScratch, buttonSniff;
+	private static ActionButton buttonItem; // Needs to be accessed by Interaction Handler
+	private static ButtonGroup gameActionButtonGroup; // group containing all action buttons
 
 	public static void main(String[] args) {
 		Main m = new Main();
+		CustomFont.getCustomFont(); // load in custom font to use in menus and logs
 		m.setLocationRelativeTo(null);
 		m.setVisible(true);
 	}
 
 	private Main() {
 		this.initComponents();
-//		openMariaDB();
 	}
 
 	private void initComponents() {
@@ -71,8 +70,11 @@ public class Main extends JFrame implements ActionListener {
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		createGameSpace();
-		fr = new FileReader();
+		fr = new FileReader(); // read script from csv
+
+		createGameSpace(); // creates layered pane for all game content
+
+		getGameContent().setScene(0);
 	}
 
 	public void changeFont(Component component, Font font) {
@@ -94,13 +96,13 @@ public class Main extends JFrame implements ActionListener {
 		gameContent = new Scene();
 
 		gameSpace.add(getGameContent(), JLayeredPane.PALETTE_LAYER);
-		
+
 		endScreen = new JLabel();
 		endScreen.setSize(RESOLUTION);
 		end = new ImageIcon(this.getClass().getResource("/images/end.png"));
 		endScreen.setIcon(end);
 		endScreen.setVisible(false);
-		gameSpace.add(endScreen, JLayeredPane.DRAG_LAYER);
+		gameSpace.add(endScreen, JLayeredPane.POPUP_LAYER);
 
 		createProtagonist();
 		createSceneBackground();
@@ -118,21 +120,11 @@ public class Main extends JFrame implements ActionListener {
 
 	private void createHelpMenu() {
 		helpMenu = ColoredPanel.create(Color.ORANGE, 10, 10, 990, 660);
-		helpMenu.setVisible(false);		
-		
+		helpMenu.setVisible(false);
+
 		gameSpace.add(helpMenu, JLayeredPane.DRAG_LAYER);
 
 		createHelpMenuScreen();
-	}
-	
-
-
-	private void createHelpMenuScreen() {
-		helpScreen = new JLabel();
-		helpScreen.setBounds(0, 0, 990, 660);
-		help = new ImageIcon(this.getClass().getResource("/images/help.png"));
-		helpScreen.setIcon(help);
-		helpMenu.add(helpScreen);
 	}
 
 	private void createSystemMenu() {
@@ -174,6 +166,14 @@ public class Main extends JFrame implements ActionListener {
 		createHelpMenu();
 	}
 
+	private void createHelpMenuScreen() {
+		helpScreen = new JLabel();
+		helpScreen.setBounds(0, 0, 990, 660);
+		help = new ImageIcon(this.getClass().getResource("/images/help.png"));
+		helpScreen.setIcon(help);
+		helpMenu.add(helpScreen);
+	}
+
 	private void createSystemMenuButtons() {
 		buttonContinue = new SystemButton("Fortsetzen", "continue", 10, 10, 250, 45);
 		buttonSave = new SystemButton("Speichern", "save", 10, 80, 250, 45);
@@ -196,6 +196,7 @@ public class Main extends JFrame implements ActionListener {
 	private void startNewGame() {
 		createGameMenu();
 		createGameTextLog();
+		sceneProtagonist.setVisible(true);
 		getGameContent().setScene(1);
 
 		buttonItem.setEnabled(false);
@@ -203,7 +204,7 @@ public class Main extends JFrame implements ActionListener {
 		// buttonSave.setEnabled(true); // ToDo: Uncomment on database implementation
 		buttonNew.setEnabled(false); // ToDo: Remove after fixing issues with calling startNewGame from running game
 
-//		resetCurrentObjects();
+//		resetCurrentObjects();	// ToDo:
 		setSceneBackground();
 
 		systemMenu.setVisible(false);
@@ -213,6 +214,7 @@ public class Main extends JFrame implements ActionListener {
 	private void startFromLoad(int scene) {
 		createGameMenu();
 		createGameTextLog();
+		sceneProtagonist.setVisible(true);
 		getGameContent().setScene(scene);
 
 		buttonContinue.setEnabled(true);
@@ -230,6 +232,7 @@ public class Main extends JFrame implements ActionListener {
 		sceneProtagonist.setBounds(550, 485, 413, 317); // at center
 		protagonist = new ImageIcon(this.getClass().getResource("/images/protagonist.png"));
 		sceneProtagonist.setIcon(protagonist);
+		sceneProtagonist.setVisible(false);
 
 		gameSpace.add(sceneProtagonist, JLayeredPane.POPUP_LAYER);
 	}
@@ -239,6 +242,8 @@ public class Main extends JFrame implements ActionListener {
 		sceneBackground.setBounds(0, 0, 1280, 800);
 
 		gameSpace.add(sceneBackground, JLayeredPane.DEFAULT_LAYER);
+
+		setSceneBackground();
 	}
 
 	private void setSceneBackground() {
@@ -256,32 +261,32 @@ public class Main extends JFrame implements ActionListener {
 
 		// persistent text log is placed inside a scrollable pane
 		gameTextBox = new JScrollPane(gameText);
-		gameTextBox.setBounds(10, 480, 500, 180);
+		gameTextBox.setBounds(10, 475, 500, 185);
 		gameTextBox.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		// remove ugly scrollbars, scroll is still functional:
 		gameTextBox.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		gameTextBox.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		// This is the hover object label
-		gameObjectText = new JLabel();
-		gameObjectText.setBounds(1000, 619, 270, 50);
-		gameObjectText.setHorizontalAlignment(SwingConstants.CENTER);
-		gameObjectText.setForeground(Color.WHITE);
-		gameObjectText.setBackground(Color.BLACK);
-		gameObjectText.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-		gameObjectText.setOpaque(true);
-		gameObjectText.setFont(menuFont);
+		// display of the currently hovered object's label
+		gameObjectLabel = new JLabel();
+		gameObjectLabel.setBounds(1000, 619, 270, 50);
+		gameObjectLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		gameObjectLabel.setForeground(Color.WHITE);
+		gameObjectLabel.setBackground(Color.BLACK);
+		gameObjectLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		gameObjectLabel.setOpaque(true);
+		gameObjectLabel.setFont(menuFont);
 
 		gameSpace.add(gameTextBox, JLayeredPane.MODAL_LAYER);
-		gameSpace.add(gameObjectText, JLayeredPane.MODAL_LAYER);
+		gameSpace.add(gameObjectLabel, JLayeredPane.MODAL_LAYER);
 
-		// set color styles to use in JTextPane gameTextBox
+		// set color styles to use in JTextPane gameTextBox log
+		StyleContext sc = StyleContext.getDefaultStyleContext();
 		yellow = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.YELLOW);
 		gray = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.LIGHT_GRAY);
 		white = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.WHITE);
 		red = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.YELLOW);
 		green = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.GREEN);
-
 	}
 
 	// Write text to persistent game log
@@ -295,7 +300,7 @@ public class Main extends JFrame implements ActionListener {
 		if (text.startsWith("„")) {
 			// dialog is in quotes, will be output in green
 			gameText.setCharacterAttributes(yellow, true);
-		} else if (text.startsWith("Mausi:")) {
+		} else if (text.startsWith("Mausi:") || text.startsWith("-")) {
 			gameText.setCharacterAttributes(gray, true);
 		} else {
 			// default flavour text will be output in white
@@ -366,23 +371,14 @@ public class Main extends JFrame implements ActionListener {
 
 		if (e.getSource() instanceof ActionButton) {
 			// system menu can only be hidden from this class
+			helpMenu.setVisible(false);
 			systemMenu.setVisible(false);
 			// JToggleButtons now have 2 Action Listeners!
 		}
 	}
 
-	public static JLabel getGameObjectText() {
-		return gameObjectText;
-	}
-	
-	public static void showEndScreen() {
-		try {
-			TimeUnit.SECONDS.sleep(2);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		endScreen.setVisible(true);
+	public static JLabel getGameObjectLabel() {
+		return gameObjectLabel;
 	}
 
 	public static Scene getGameContent() {
@@ -392,4 +388,14 @@ public class Main extends JFrame implements ActionListener {
 	public static ActionButton getItemButton() {
 		return buttonItem;
 	}
+
+	public static JLabel getEndScreen() {
+		return endScreen;
+	}
+
+	public static ButtonGroup getGameActionButtonGroup() {
+		return gameActionButtonGroup;
+
+	}
+
 }

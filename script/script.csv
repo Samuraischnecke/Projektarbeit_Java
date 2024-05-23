@@ -76,7 +76,7 @@ scene;object;state;state_name;action;Item;result_action;result_text_de
 1;door;1;closed;use;;;„Sie ist verschlossen.“
 1;door;1;closed;talk;;;„Halloooo? Ist dahinter jemand?“
 1;door;1;closed;scratch;;;„Verarbeitetes Holz ist nicht so meins.“
-1;door;1;closed;sniff;;;“Frisch geölt.“
+1;door;1;closed;sniff;;;„Frisch geölt.“
 1;door;1;closed;item;wool;;„Das verstehe ich jetzt nicht…“
 1;door;1;closed;item;key;open_door;Katzi steckt den Schlüssel in das Schlüsselloch. Die Tür öffnet sich!
 1;door;2;opened;inspect;;;Eine kleintiergroße, geöffnete Tür!

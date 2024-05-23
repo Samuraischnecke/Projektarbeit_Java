@@ -101,7 +101,7 @@ public class InteractionHandler {
 			break;
 		case "leave_room":
 			Main.write("Katzi entschwindet durch die Tür.", true);
-			Main.showEndScreen();
+			Main.getEndScreen().setVisible(true);
 			break;
 		}
 	}
